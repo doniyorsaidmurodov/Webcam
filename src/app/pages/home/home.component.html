@@ -1,0 +1,118 @@
+<div class="container-fluid py-5">
+
+  <div class="row align-items-center">
+    <div class="col-lg-12">
+      <div class="col-lg-6">
+        <div *ngIf="src" class="input-group">
+          <input [(ngModel)]="src" aria-label="Путь к документам" class="form-control" placeholder="Путь к документам"
+                 type="text">
+          <input [(ngModel)]="currentYear" aria-label="Год" class="form-control" placeholder="Год" type="text">
+          <input [(ngModel)]="currentMonth" aria-label="Месяц" class="form-control" placeholder="Месяц" type="text">
+          <input [(ngModel)]="currentDate" aria-label="День" class="form-control" placeholder="День" type="text">
+          <button (click)="editRealSrc()" class="btn btn-outline-primary" type="button">Изменить</button>
+        </div>
+        <div class="d-flex justify-content-between mt-3">
+          <small class="form-text text-muted">
+            Папка:
+            <strong>{{realSrc}}</strong>
+          </small>
+          <button (click)="check()" class="btn btn-primary">Проверить</button>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <!--  <div class="row">-->
+  <!--    <div class="col-lg-12">-->
+  <!--      -->
+  <!--    </div>-->
+  <!--  </div>-->
+
+  <div class="row mt-3">
+    <!--    <div class="col-lg-12">-->
+
+    <!--    </div>-->
+    <div class="col-lg-6 border-right">
+      <app-webcam #webcamComponent (readyEE)="ready($event)"></app-webcam>
+      <div class="shadow userImg mt-5 p-2 ml-3">
+        <img alt="" id="img" src="">
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <table *ngIf="list" class="table table-border table-hover">
+        <tbody>
+        <tr>
+          <td class="font-weight-bold">FAMILIYASI:</td>
+          <td>{{list.pFieldMaps[7].Field_MRZ}}</td>
+        </tr>
+        <tr>
+          <td class="font-weight-bold">ISMI:</td>
+          <td>{{list.pFieldMaps[8].Field_MRZ}}</td>
+        </tr>
+        <tr>
+          <td class="font-weight-bold">FUQAROLIGI:</td>
+          <td>{{list.pFieldMaps[9].Field_MRZ}}</td>
+        </tr>
+        <tr>
+          <td class="font-weight-bold">TUG'ILGAN JOYI:</td>
+          <td>{{list.pFieldMaps[6].Field_RFID}}</td>
+        </tr>
+        <tr>
+          <td class="font-weight-bold">TUG'LIGAN SANASI:</td>
+          <td>{{list.pFieldMaps[5].Field_MRZ}}</td>
+        </tr>
+        <tr>
+          <td class="font-weight-bold">PASPORT RAQAMI:</td>
+          <td>{{list.pFieldMaps[2].Field_MRZ}}</td>
+        </tr>
+        <tr>
+          <td class="font-weight-bold">BERILGAN SANASI:</td>
+          <td>{{list.pFieldMaps[4].Field_RFID}}</td>
+        </tr>
+        <tr>
+          <td class="font-weight-bold">AMAL QILISH MUDDATI:</td>
+          <td>{{list.pFieldMaps[3].Field_MRZ}}</td>
+        </tr>
+        <tr>
+          <td class="font-weight-bold">PERSONALLASHTIRISH ORGANI:</td>
+          <td>{{list.pFieldMaps[11].Field_RFID}}</td>
+        </tr>
+        <tr>
+          <td class="font-weight-bold">TURI:</td>
+          <td>{{list.pFieldMaps[0].Field_MRZ}}</td>
+        </tr>
+        <tr>
+          <td class="font-weight-bold">DABLAT KODI:</td>
+          <td>{{list.pFieldMaps[1].Field_MRZ}}</td>
+        </tr>
+        <tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="similarity > 80" class="alert alert-success font-weight-bold mb-3" role="alert">
+        O'xshashlik : {{similarity}}%
+      </div>
+      <div *ngIf="similarity <= 50 && similarity!=0" class="alert alert-danger font-weight-bold mb-3" role="alert">
+        O'xshashlik : {{similarity}}%
+      </div>
+      <div *ngIf="similarity < 80 && similarity > 50" class="alert alert-warning font-weight-bold mb-3">
+        O'xshashlik : {{similarity}}%
+      </div>
+
+      <div *ngFor="let image of globalImages, i as index" class="list">
+        <div class="list-item">
+          <div class=" d-flex justify-content-center flex-column text-center">
+            <img [id]="image.name" [src]="'data:image/jpeg;base64,' + image.base64_image" height="200"
+                 width="200" alt="">
+            <span class="font-weight-bold">{{image.percentage}}%</span>
+            <span>{{image.name}}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
