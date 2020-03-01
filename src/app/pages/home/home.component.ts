@@ -4,6 +4,7 @@ import {ElectronService} from 'ngx-electron';
 import {WebcamComponent} from '../../components/webcam/webcam.component';
 import {List} from '../../class/list';
 import {FieldMaps} from '../../class/field-maps';
+import {Router} from '@angular/router';
 
 interface ListImages {
   base64_image: string;
@@ -31,7 +32,9 @@ export class HomeComponent implements OnInit {
 
   @ViewChild(WebcamComponent, {static: false}) webcamComponent: WebcamComponent;
 
-  constructor(private httpClient: HttpClient, private electronService: ElectronService) {
+  constructor(private httpClient: HttpClient,
+              private electronService: ElectronService,
+              private route: Router) {
   }
 
   ngOnInit(): void {
@@ -75,22 +78,29 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  clearList(event) {
+    if (event) {
+      this.globalImages = [];
+      this.similarity = null;
+    }
+  }
+
   ready(event) {
-    this.httpClient.post('http://127.0.0.1:8080/upload_images/', {
+    this.httpClient.post<any>('http://127.0.0.1:8000/api/upload_images/', {
       passport: this.passportImageBase64,
       webcam: event.imageAsBase64,
     }).subscribe(next => {
       this.globalImages = [];
       this.similarity = 0;
       console.log('next is ' + next);
-      if (next['percentage_passp_vs_cam']) {
-        this.similarity = Number(next['percentage_passp_vs_cam']);
+      if (next.percentage_passp_vs_cam) {
+        this.similarity = Number(next.percentage_passp_vs_cam);
       }
       for (let i = 0; i < 10; i++) {
-        if (next[String(i)]['base64_image']) {
-          const base64: any = next[String(i)]['base64_image'];
-          const percent: any = next[String(i)]['percentage'];
-          const name1: any = next[String(i)]['name'];
+        if (next[String(i)].base64_image) {
+          const base64: any = next[String(i)].base64_image;
+          const percent: any = next[String(i)].percentage;
+          const name1: any = next[String(i)].name;
           console.log('base64 is ' + base64);
           console.log('percent is ' + percent);
           console.log('name is ' + name1);
@@ -114,6 +124,14 @@ export class HomeComponent implements OnInit {
     this.editRealSrc();
 
     // this.webcamComponent.again();
+  }
+
+  goToAuth() {
+    this.route.navigate(['auth']);
+  }
+
+  goToAdmin() {
+    this.route.navigate(['admin']);
   }
 }
 

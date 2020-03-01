@@ -1,6 +1,10 @@
-const {app, BrowserWindow, ipcMain} = require('electron');
+const {app, BrowserWindow, Menu, ipcMain} = require('electron');
 const {readdirSync, statSync} = require('fs');
 
+// vars
+let mainWindow;
+
+// functions
 const getDirectories = (source) => {
   return readdirSync(source, {withFileTypes: true})
     .filter(dirent => dirent.isDirectory())
@@ -13,42 +17,52 @@ const getDirectories = (source) => {
     });
 };
 
-let win;
+const createMenu = () => {
+  let menu = [
+    {
+      label: 'File',
+      submenu: [
+        {
+          label: 'Quit',
+          accelerator: process.platform === 'darwin' ? 'Command+Q' : 'Ctrl+Q',
+          click() {
+            app.quit();
+          }
+        }
+      ]
+    }
+  ];
 
-function createWindow() {
-  // Create the browser window.
-  win = new BrowserWindow({
-    width: 600,
-    height: 670,
+  Menu.setApplicationMenu(Menu.buildFromTemplate(menu));
+};
+
+const createWindow = () => {
+  mainWindow = new BrowserWindow({
+    width: 0,
+    height: 0,
+    show: false,
+    title: 'WebCam Project',
     icon: `file://${__dirname}/dist/webcam1/assets/logo.png`,
     webPreferences: {
       nodeIntegration: true
     }
   });
-  win.maximize();
+  mainWindow.maximize();
+  mainWindow.show();
 
-  win.loadURL(`file://${__dirname}/dist/webcam1/index.html`);
+  mainWindow.loadURL(`file://${__dirname}/dist/webcam1/index.html`);
 
-  // uncomment below to open the DevTools.
-  // win.webContents.openDevTools();
+  createMenu();
 
-  // console.log('send');
-  // const folders = getDirectories('D:\\RD\\2020\\1\\8');
-  // win.webContents.send('getFolderResponse', folders[folders.length - 1]);
-  // console.log('sent');
-
-  // Event when the window is closed.
-  win.on('closed', function () {
-    win = null
+  mainWindow.on('closed', () => {
+    mainWindow = null;
   });
-}
+};
 
-// Create window on electron intialization
+// events
 app.on('ready', createWindow);
 
-// Quit when all windows are closed.
 app.on('window-all-closed', function () {
-
   // On macOS specific close process
   if (process.platform !== 'darwin') {
     app.quit()
@@ -57,15 +71,16 @@ app.on('window-all-closed', function () {
 
 app.on('activate', function () {
   // macOS specific close process
-  if (win === null) {
+  if (mainWindow === null) {
     createWindow()
   }
 });
 
-
+// additional events
 ipcMain.on('getFolder', (event, arg) => {
   const folders = getDirectories(arg);
   event.sender.send('getFolderResponse',
     encodeURIComponent(folders[folders.length - 1].trim())
   );
 });
+

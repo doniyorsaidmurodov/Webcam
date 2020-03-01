@@ -9,6 +9,7 @@ import {Observable, Subject} from 'rxjs';
 })
 export class WebcamComponent implements OnInit {
   @Output() readyEE = new EventEmitter();
+  @Output() clear = new EventEmitter();
   // toggle webcam on/off
   showWebcam = true;
   allowCameraSwitch = true;
@@ -28,6 +29,13 @@ export class WebcamComponent implements OnInit {
   // switch to next / previous / specific webcam; true/false: forward/backwards, string: deviceId
   private nextWebcam: Subject<boolean | string> = new Subject<boolean | string>();
 
+  get triggerObservable(): Observable<void> {
+    return this.trigger.asObservable();
+  }
+
+  get nextWebcamObservable(): Observable<boolean | string> {
+    return this.nextWebcam.asObservable();
+  }
 
   ngOnInit(): void {
     WebcamUtil.getAvailableVideoInputs()
@@ -58,16 +66,9 @@ export class WebcamComponent implements OnInit {
     this.deviceId = deviceId;
   }
 
-  get triggerObservable(): Observable<void> {
-    return this.trigger.asObservable();
-  }
-
-  get nextWebcamObservable(): Observable<boolean | string> {
-    return this.nextWebcam.asObservable();
-  }
-
   again() {
     this.webcamImage = null;
+    this.clear.emit(true);
   }
 
   ready() {

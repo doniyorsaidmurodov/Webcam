@@ -1,0 +1,150 @@
+<button (click)="goHome()" class="btn btn-primary m-3">Back to Home</button>
+<div class="container-fluid">
+  <form (ngSubmit)="submit()" [formGroup]="form" class="card my-3">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="card-body">
+          <h3 class="card-title text-center">Add info into black list</h3>
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">Name: </label>
+            <div class="col-lg-8">
+              <input class="form-control" formControlName="name" placeholder="First name" type="text">
+              <div *ngIf="form.get('name').invalid && form.get('name').touched" class="validation">
+                <small *ngIf="form.get('name').errors.required">Name input can't be empty</small>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">Surname: </label>
+            <div class="col-lg-8">
+              <input class="form-control" formControlName="surname" placeholder="Surname" type="text">
+              <div *ngIf="form.get('surname').invalid && form.get('surname').touched" class="validation">
+                <small *ngIf="form.get('surname').errors.required">Surname input can't be empty</small>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">Patronymic: </label>
+            <div class="col-lg-8">
+              <input class="form-control" formControlName="patronymic" placeholder="Middle name" type="text">
+              <div *ngIf="form.get('patronymic').invalid && form.get('patronymic').touched" class="validation">
+                <small *ngIf="form.get('patronymic').errors.required">Patronymic input can't be empty</small>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">Place of Birth: </label>
+            <div class="col-lg-8">
+              <input class="form-control" formControlName="placeOfBirth" placeholder="Place of Birth" type="text">
+              <div *ngIf="form.get('placeOfBirth').invalid && form.get('placeOfBirth').touched" class="validation">
+                <small *ngIf="form.get('placeOfBirth').errors.required">Place of Birth input can't be empty</small>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">Date of birth: </label>
+            <div class="col-lg-8">
+              <input class="form-control" formControlName="dateOfBirth" placeholder="dd/mm/yy" type="text">
+              <div *ngIf="form.get('dateOfBirth').invalid && form.get('dateOfBirth').touched" class="validation">
+                <small *ngIf="form.get('dateOfBirth').errors.required">Date of birth input can't be empty</small>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">Passport ID: </label>
+            <div class="col-lg-8">
+              <input class="form-control" formControlName="passportId" placeholder="Passport ID" type="text">
+              <div *ngIf="form.get('passportId').invalid && form.get('passportId').touched" class="validation">
+                <small *ngIf="form.get('passportId').errors.required">Passport ID input can't be empty</small>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">Date of issue: </label>
+            <div class="col-lg-8">
+              <input class="form-control" formControlName="dateOfIssue" placeholder="Date of issue" type="text">
+              <div *ngIf="form.get('dateOfIssue').invalid && form.get('dateOfIssue').touched" class="validation">
+                <small *ngIf="form.get('dateOfIssue').errors.required">Date of issue input can't be empty</small>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">Expiration date: </label>
+            <div class="col-lg-8">
+              <input class="form-control" formControlName="expDate" placeholder="Expiration date" type="text">
+              <div *ngIf="form.get('expDate').invalid && form.get('expDate').touched" class="validation">
+                <small *ngIf="form.get('expDate').errors.required">Expiration date input can't be empty</small>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">Personalization: </label>
+            <div class="col-lg-8">
+              <input class="form-control" formControlName="personalization" placeholder="Personalization Authority"
+                     type="text">
+              <div *ngIf="form.get('personalization').invalid && form.get('personalization').touched"
+                   class="validation">
+                <small *ngIf="form.get('personalization').errors.required">Personalization input can't be empty</small>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">Type: </label>
+            <div class="col-lg-8">
+              <input class="form-control" formControlName="type" placeholder="Type" type="text">
+              <div *ngIf="form.get('type').invalid && form.get('type').touched" class="validation">
+                <small *ngIf="form.get('type').errors.required">Type input can't be empty</small>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">State Code: </label>
+            <div class="col-lg-8">
+              <input class="form-control" formControlName="stateCode" placeholder="State Code" type="text">
+              <div *ngIf="form.get('stateCode').invalid && form.get('stateCode').touched" class="validation">
+                <small *ngIf="form.get('stateCode').errors.required">State Code input can't be empty</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card-body">
+          <h3 class="card-title text-center">Upload photo</h3>
+          <div class="custom-file mb-3">
+            <input class="custom-file-input w-50" id="customFile" type="file">
+            <label class="custom-file-label" for="customFile">Choose file</label>
+          </div>
+          <div class="form-group">
+            <label for="wanted">Wanted</label>
+            <input class="form-control" formControlName="wanted" id="wanted"
+                   type="text">
+            <div *ngIf="form.get('wanted').invalid && form.get('wanted').touched" class="validation">
+              <small *ngIf="form.get('wanted').errors.required">Wanted input can't be empty</small>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cause">Cause</label>
+            <input class="form-control" formControlName="cause" id="cause"
+                   type="text">
+            <div *ngIf="form.get('cause').invalid && form.get('cause').touched" class="validation">
+              <small *ngIf="form.get('cause').errors.required">Cause input can't be empty</small>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="notes">Notes</label>
+            <input class="form-control" formControlName="notes" id="notes"
+                   type="text">
+            <div *ngIf="form.get('notes').invalid && form.get('notes').touched" class="validation">
+              <small *ngIf="form.get('notes').errors.required">Notes input can't be empty</small>
+            </div>
+          </div>
+          <div class="text-center">
+            <button [disabled]="form.invalid || form.pending" class="btn btn-primary my-3 w-50" type="submit">Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

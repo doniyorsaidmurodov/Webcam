@@ -1,0 +1,76 @@
+<div class="container-fluid">
+  <form (ngSubmit)="submit()" [formGroup]="form" class="card my-3">
+    <div class="row">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <div class="card-body">
+          <h3 class="card-title text-center">Register new user</h3>
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">Login: </label>
+            <div class="col-lg-8">
+              <input class="form-control" formControlName="login" placeholder="Username" type="text">
+              <div *ngIf="form.get('login').invalid && form.get('login').touched" class="validation">
+                <small *ngIf="form.get('login').errors.required">Login input can't be empty</small>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">Password: </label>
+            <div class="col-lg-8">
+              <input class="form-control" formControlName="password" placeholder="Password" type="text">
+              <div *ngIf="form.get('password').invalid && form.get('password').touched" class="validation">
+                <small *ngIf="form.get('password').errors.required">Password input can't be empty</small>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">Confirm Password: </label>
+            <div class="col-lg-8">
+              <input class="form-control" formControlName="confirmPassword" placeholder="Confirm Password" type="text">
+              <div *ngIf="form.get('confirmPassword').invalid && form.get('confirmPassword').touched"
+                   class="validation">
+                <small *ngIf="form.get('confirmPassword').errors.required">Confirm Password input can't be empty</small>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">Name of border control: </label>
+            <div class="col-lg-8">
+              <input class="form-control" formControlName="nameBorderControl" placeholder="Name of border control"
+                     type="text">
+              <div *ngIf="form.get('nameBorderControl').invalid && form.get('nameBorderControl').touched"
+                   class="validation">
+                <small *ngIf="form.get('nameBorderControl').errors.required">Name of border control input can't be empty</small>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">Responsible person: </label>
+            <div class="col-lg-8">
+              <input class="form-control" formControlName="responsiblePerson" placeholder="Responsible person"
+                     type="text">
+              <div *ngIf="form.get('responsiblePerson').invalid && form.get('responsiblePerson').touched"
+                   class="validation">
+                <small *ngIf="form.get('responsiblePerson').errors.required">Responsible person input can't be empty</small>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">Info: </label>
+            <div class="col-lg-8">
+              <input class="form-control" formControlName="info" placeholder="Info" type="text">
+              <div *ngIf="form.get('info').invalid && form.get('info').touched" class="validation">
+                <small *ngIf="form.get('info').errors.required">Info input can't be empty</small>
+              </div>
+            </div>
+          </div>
+          <div class="text-right">
+            <button [disabled]="form.invalid || form.pending" class="btn btn-primary my-3 w-25" type="submit">Save
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+  </form>
+</div>

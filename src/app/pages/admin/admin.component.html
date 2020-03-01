@@ -1,0 +1,28 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/admin', 'add-black-list']">add-black-list</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/admin', 'add-user-list']">add-user-list</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/admin', 'black-list']">black-list</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/admin', 'user-list']">user-list</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-0">
+      <li class="nav-item">
+        <a class="nav-link" href="#">log-in</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">log-out</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<router-outlet></router-outlet>
+
