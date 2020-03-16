@@ -42,22 +42,10 @@ form {
   margin-top: 20px;
 }
 
-//
-//input {
-//  margin: 0.2rem 0;
-//
-//  &.ng-invalid.ng-touched {
-//    border: 2px solid red;
-//  }
-//
-//  &.ng-valid {
-//    border: 2px solid green;
-//  }
-//}
-//
-//.validation {
-//  color: red;
-//}
 .text-red {
+  color: red;
+}
+
+.error {
   color: red;
 }

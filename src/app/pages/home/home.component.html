@@ -1,124 +1,132 @@
-<div class="container-fluid py-5">
-
-  <div class="row align-items-center">
-    <div class="col-lg-12">
-      <div class="col-lg-6">
-
-        <div class="d-flex justify-content-between mt-3">
-          <small class="form-text text-muted">
-            Папка:
-            <strong>{{realSrc}}</strong>
-          </small>
-          <button (click)="check()" class="btn btn-primary" data-toggle="modal" data-target="#checkModal">Проверить</button>
-          <button (click)="goToAuth()" class="btn btn-primary">Auth</button>
-          <button (click)="goToAdmin()" class="btn btn-primary">Admin</button>
-        </div>
-      </div>
+<div class="d-flex">
+  <button (click)="showHide()" class="btn btn-sm btn-primary position-relative show-btn">
+    <span *ngIf="!testerTool"><i class="fa fa-folder-open"></i></span>
+    <span *ngIf="testerTool"><i class="fa fa-cogs"></i></span>
+  </button>
+  <div *ngIf="testerTool" class="col-lg-4">
+    <div *ngIf="src" class="input-group input-group-sm">
+      <input [(ngModel)]="src" aria-label="Путь к документам" class="form-control" placeholder="Путь к документам"
+             type="text">
+      <input [(ngModel)]="currentYear" aria-label="Год" class="form-control" placeholder="Год" type="text">
+      <input [(ngModel)]="currentMonth" aria-label="Месяц" class="form-control" placeholder="Месяц" type="text">
+      <input [(ngModel)]="currentDate" aria-label="День" class="form-control" placeholder="День" type="text">
+      <button (click)="editRealSrc()" class="btn btn-outline-primary form-control" type="button">Изменить</button>
     </div>
+    <!--    <div class="d-flex justify-content-between mt-3">-->
+    <!--      <small class="form-text text-muted">-->
+    <!--        Папка:-->
+    <!--        <strong>{{realSrc}}</strong>-->
+    <!--      </small>-->
+    <!--      &lt;!&ndash;          <button (click)="check()" class="btn btn-primary">Проверить</button>&ndash;&gt;-->
+    <!--    </div>-->
   </div>
+  <!--  <button class="btn btn-sm btn-danger pt-2" (click)="clearAll()">Clear all</button>-->
+  <button (click)="clearAll()" class="btn btn-sm btn-danger position-relative show-btn mx-2 px-2">
+    Очистить<span><i class="far fa-trash-alt"></i></span>
+  </button>
+  <button (click)="modal('smth')" class="btn btn-sm btn-danger position-relative show-btn mx-2 px-2">
+    open
+  </button>
+</div>
+
+<div class="container-fluid py-5">
   <div class="row mt-3">
     <div class="col-lg-3">
       <app-webcam #webcamComponent (clear)="clearList($event)" (readyEE)="ready($event)"></app-webcam>
-      <div class="shadow userImg mt-5 p-2 ml-3">
+      <div class="shadow userImg p-2 ml-3">
+        <button (click)="check()" class="btn btn-sm btn-success">Загрузить документ</button>
         <img alt="" id="img" src="">
       </div>
     </div>
+
     <div class="col-lg-9">
-      <table *ngIf="list" class="table table-border table-hover">
-        <tbody>
-        <tr>
-          <td class="font-weight-bold">Фамилия:</td>
-          <td>{{list.pFieldMaps[7].Field_MRZ}}</td>
-        </tr>
-        <tr>
-          <td class="font-weight-bold">Имя:</td>
-          <td>{{list.pFieldMaps[8].Field_MRZ}}</td>
-        </tr>
-        <tr>
-          <td class="font-weight-bold">Гражданство:</td>
-          <td>{{list.pFieldMaps[9].Field_MRZ}}</td>
-        </tr>
-        <tr>
-          <td class="font-weight-bold">Место рождения:</td>
-          <td>{{list.pFieldMaps[6].Field_RFID}}</td>
-        </tr>
-        <tr>
-          <td class="font-weight-bold">Дата рождения:</td>
-          <td>{{list.pFieldMaps[5].Field_MRZ}}</td>
-        </tr>
-        <tr>
-          <td class="font-weight-bold">Номер паспорта:</td>
-          <td>{{list.pFieldMaps[2].Field_MRZ}}</td>
-        </tr>
-        <tr>
-          <td class="font-weight-bold">Дата выдачи:</td>
-          <td>{{list.pFieldMaps[4].Field_RFID}}</td>
-        </tr>
-        <tr>
-          <td class="font-weight-bold">Срок годности:</td>
-          <td>{{list.pFieldMaps[3].Field_MRZ}}</td>
-        </tr>
-        <tr>
-          <td class="font-weight-bold">Орган персонализаци:</td>
-          <td>{{list.pFieldMaps[11].Field_RFID}}</td>
-        </tr>
-        <tr>
-          <td class="font-weight-bold">Тип:</td>
-          <td>{{list.pFieldMaps[0].Field_MRZ}}</td>
-        </tr>
-        <tr>
-          <td class="font-weight-bold">Код государствы:</td>
-          <td>{{list.pFieldMaps[1].Field_MRZ}}</td>
-        </tr>
-        <tr>
-        </tbody>
-      </table>
-
-      <div *ngIf="similarity *100 >= 50" [hidden]="similarity===null" class="alert alert-success font-weight-bold mb-3"
-           role="alert">
-        Точность : {{similarity * 100}}%
+      <div *ngIf="dataLoading" class="d-flex justify-content-center align-items-center flex-column">
+        <p>Data is loading...</p>
+        <img alt="spinner" src="./assets/img/spinner.svg">
       </div>
-      <div *ngIf="similarity * 100< 50 && similarity>0" [hidden]="similarity===null"
-           class="alert alert-danger font-weight-bold mb-3" role="alert">
-        Точность : {{similarity * 100}}%
-      </div>
+      <div *ngIf="!dataLoading">
+        <table *ngIf="pFieldMaps.length" class="table table-border table-hover">
+          <tbody>
+          <tr>
+            <td class="font-weight-bold">Фамилия:</td>
+            <td>{{pFieldMaps[8].Field_MRZ}}</td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold">Имя:</td>
+            <td>{{pFieldMaps[9].Field_MRZ}}</td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold">Пол:</td>
+            <td>{{pFieldMaps[11].Field_MRZ}}</td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold">Гражданство:</td>
+            <td>{{pFieldMaps[10].Field_MRZ}}</td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold">Место рождения:</td>
+            <td>{{pFieldMaps[6].Field_RFID}}</td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold">Дата рождения:</td>
+            <td>{{pFieldMaps[5].Field_MRZ}}</td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold">Номер паспорта:</td>
+            <td>{{pFieldMaps[2].Field_MRZ}}</td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold">Дата выдачи:</td>
+            <td>{{pFieldMaps[4].Field_RFID}}</td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold">Срок годности:</td>
+            <td>{{pFieldMaps[3].Field_MRZ}}</td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold">Орган персонализаци:</td>
+            <td>{{pFieldMaps[11].Field_RFID}}</td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold">Тип:</td>
+            <td>{{pFieldMaps[0].Field_MRZ}}</td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold">Код государствы:</td>
+            <td>{{pFieldMaps[1].Field_MRZ}}</td>
+          </tr>
+          <tr>
+          </tbody>
+        </table>
 
+        <div *ngIf="similarity *100 >= 50" [hidden]="similarity===null"
+             class="alert alert-success font-weight-bold mb-3"
+             role="alert">
+          Точность : {{similarity * 100}}%
+        </div>
+        <div *ngIf="similarity * 100< 50 && similarity>0" [hidden]="similarity===null"
+             class="alert alert-danger font-weight-bold mb-3" role="alert">
+          Точность : {{similarity * 100}}%
+        </div>
 
-      <div class="list">
-        <div *ngFor="let image of globalImages"
-             class="list-item d-flex justify-content-center flex-column text-center">
-          <img [id]="image.name" [src]="'data:image/jpeg;base64,' + image.base64_image" alt="">
-          <span class="font-weight-bold">{{image.percentage * 100}}%</span>
-          <span>{{image.name}}</span>
+        <div *ngIf="!loading; else loadingBlock" class="list">
+          <div *ngFor="let image of globalImages"
+               class="list-item d-flex justify-content-center flex-column text-center">
+            <img [id]="image.name" [src]="'data:image/jpeg;base64,' + image.base64_image" alt="">
+            <span (click)="modal(image)"
+                  class=" d-flex justify-content-center align-items-center flex-column black-item">
+            <span class="font-weight-bold">{{image.percentage * 100}}%</span>
+            <span>{{image.name}}</span></span>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
+      <ng-template #loadingBlock class="d-flex justify-content-center align-items-center flex-column">
+        <p>Request is in process...</p>
+        <img alt="spinner" src="./assets/img/spinner.svg">
+      </ng-template>
 
-<!-- Modal -->
-<div class="modal fade" id="checkModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Изменить папку</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div *ngIf="src" class="input-group">
-          <input [(ngModel)]="src" aria-label="Путь к документам" class="form-control" placeholder="Путь к документам"
-                 type="text">
-          <input [(ngModel)]="currentYear" aria-label="Год" class="form-control" placeholder="Год" type="text">
-          <input [(ngModel)]="currentMonth" aria-label="Месяц" class="form-control" placeholder="Месяц" type="text">
-          <input [(ngModel)]="currentDate" aria-label="День" class="form-control" placeholder="День" type="text">
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button (click)="editRealSrc()" class="btn btn-outline-primary" type="button">Изменить</button>
-      </div>
+      <app-modal></app-modal>
+
     </div>
   </div>
 </div>

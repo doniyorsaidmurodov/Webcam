@@ -52,6 +52,12 @@ export class WebcamComponent implements OnInit {
     this.errors.push(error);
   }
 
+  clearImage(event) {
+    if (event) {
+      this.again();
+    }
+  }
+
   showNextWebcam(directionOrDeviceId: boolean | string): void {
     this.nextWebcam.next(directionOrDeviceId);
   }

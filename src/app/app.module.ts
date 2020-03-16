@@ -12,9 +12,9 @@ import {HttpClientModule} from '@angular/common/http';
 import {WebcamOriginalComponent} from './components/webcam-original/webcam-original.component';
 import {NgxElectronModule} from 'ngx-electron';
 import {AuthorizationComponent} from './pages/authorization/authorization.component';
-import {AdminRoutingModule} from './pages/admin/admin-routing.module';
-import { BlackListComponent } from './pages/admin/black-list/black-list.component';
-import { UserListComponent } from './pages/admin/user-list/user-list.component';
+import {SettingsComponent} from './pages/settings/settings.component';
+import {CookieService} from 'ngx-cookie-service';
+import {ModalComponent} from './components/modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -23,8 +23,8 @@ import { UserListComponent } from './pages/admin/user-list/user-list.component';
     WebcamComponent,
     WebcamOriginalComponent,
     AuthorizationComponent,
-    BlackListComponent,
-    UserListComponent
+    SettingsComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,
@@ -35,10 +35,9 @@ import { UserListComponent } from './pages/admin/user-list/user-list.component';
     FormsModule,
     NgxElectronModule,
     ReactiveFormsModule,
-    AppRoutingModule,
-    AdminRoutingModule
+    AppRoutingModule
   ],
-  providers: [],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

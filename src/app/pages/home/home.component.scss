@@ -3,21 +3,24 @@
 }
 
 .userImg {
-  width: 330px;
+  position: relative;
+  width: 242px;
   text-align: center;
-  position: initial;
+  //top: 40px;
 }
 
 table td {
   padding: .1rem !important;
   font-size: 13px;
 }
-.list{
+
+.list {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: end;
 }
+
 .list-item {
   width: 200px;
   height: 300px;
@@ -27,5 +30,21 @@ table td {
   img {
     width: 100%;
     height: 80%;
+  }
+}
+
+.show-btn {
+  top: 5px;
+  left: 5px;
+}
+
+.input-group {
+  top: 5px;
+}
+.black-item{
+  :hover{
+    cursor: pointer;
+    background-color: #e4e4e4;
+    color: #333;
   }
 }

@@ -17,24 +17,24 @@ const getDirectories = (source) => {
     });
 };
 
-const createMenu = () => {
-  let menu = [
-    {
-      label: 'File',
-      submenu: [
-        {
-          label: 'Quit',
-          accelerator: process.platform === 'darwin' ? 'Command+Q' : 'Ctrl+Q',
-          click() {
-            app.quit();
-          }
-        }
-      ]
-    }
-  ];
-
-  Menu.setApplicationMenu(Menu.buildFromTemplate(menu));
-};
+// const createMenu = () => {
+//   let menu = [
+//     {
+//       label: 'File',
+//       submenu: [
+//         {
+//           label: 'Quit',
+//           accelerator: process.platform === 'darwin' ? 'Command+Q' : 'Ctrl+Q',
+//           click() {
+//             app.quit();
+//           }
+//         }
+//       ]
+//     }
+//   ];
+//
+//   Menu.setApplicationMenu(Menu.buildFromTemplate(menu));
+// };
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
@@ -52,7 +52,7 @@ const createWindow = () => {
 
   mainWindow.loadURL(`file://${__dirname}/dist/webcam1/index.html`);
 
-  createMenu();
+  // createMenu();
 
   mainWindow.on('closed', () => {
     mainWindow = null;

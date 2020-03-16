@@ -1,14 +1,19 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {Component, EventEmitter, NgZone, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {ElectronService} from 'ngx-electron';
 import {WebcamComponent} from '../../components/webcam/webcam.component';
 import {List} from '../../class/list';
 import {FieldMaps} from '../../class/field-maps';
 import {Router} from '@angular/router';
+import {AuthService} from '../services/auth.service';
+import {ModalMessageService} from '../services/modal-message.service';
+import {ApiService} from '../services/api.service';
+import {Subscription} from 'rxjs';
 
 interface ListImages {
   base64_image: string;
   percentage: number;
+  id: number;
   name: string;
 }
 
@@ -17,7 +22,7 @@ interface ListImages {
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   src: string = null;
   currentYear: number = null;
   currentMonth: number = null;
@@ -25,16 +30,22 @@ export class HomeComponent implements OnInit {
   realSrc: string = null;
   passportImageBase64: string = null;
 
-  list: List;
-  fieldMaps: FieldMaps[];
+  pFieldMaps: FieldMaps[] = [];
   globalImages: ListImages[] = [];
   similarity = 0;
+  testerTool: boolean = null;
+  loading: boolean = null;
+  dataLoading: boolean = null;
+  counter = 0;
 
+  uploadSubs: Subscription;
   @ViewChild(WebcamComponent, {static: false}) webcamComponent: WebcamComponent;
 
   constructor(private httpClient: HttpClient,
               private electronService: ElectronService,
-              private route: Router) {
+              private router: Router, private authService: AuthService,
+              private modalMessageService: ModalMessageService, private api: ApiService,
+              private zone: NgZone) {
   }
 
   ngOnInit(): void {
@@ -42,8 +53,35 @@ export class HomeComponent implements OnInit {
     this.currentYear = currentDate.getFullYear();
     this.currentMonth = currentDate.getMonth() + 1;
     this.currentDate = currentDate.getDate();
-
+    this.testerTool = false;
+    this.dataLoading = false;
+    this.clearAll();
     this.reset();
+  }
+
+  ngOnDestroy(): void {
+    if (this.uploadSubs) {
+      this.uploadSubs.unsubscribe();
+    }
+  }
+
+  modal(image) {
+    if (image) {
+      this.modalMessageService.newMessageEmit.emit(image);
+    }
+    console.log('modal opened');
+  }
+
+
+  clearAll() {
+    this.pFieldMaps = [];
+    this.globalImages = [];
+    this.similarity = null;
+    this.reset();
+  }
+
+  showHide() {
+    this.testerTool = !this.testerTool;
   }
 
   editRealSrc() {
@@ -55,25 +93,40 @@ export class HomeComponent implements OnInit {
 
 
   check() {
+    this.dataLoading = true;
     this.electronService.ipcRenderer.send('getFolder', this.realSrc);
-
-    this.electronService.ipcRenderer.on('getFolderResponse', (event, args) => {
+    this.electronService.ipcRenderer.once('getFolderResponse', (event, args) => {
       const filePrefix = 'file:///' + this.realSrc + args + '/';
 
-      this.httpClient.get<any>(filePrefix + 'RFID_Image_Data_Original.json').subscribe(next => {
-        this.passportImageBase64 = next.RFID_ORIGINAL_GRAPH_DATA[0].File_Image.Data;
-        (document.getElementById('img') as any).src = 'data:image/jpeg;base64,' + this.passportImageBase64;
-      }, error => {
-        console.error(error);
-      });
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: 'Token ' + this.authService.getToken()
+        })
+      };
 
-      this.httpClient.get<any>(filePrefix + 'LexicalAnalyze_Data.json').subscribe(next => {
-        this.list = next.ListVerifiedFields;
-        next.ListVerifiedFields.pFieldMaps.forEach(arr => {
-          this.fieldMaps = arr;
+      this.counter = 0;
+      this.httpClient.get<any>(filePrefix + 'LexicalAnalyze_Data.json', httpOptions).subscribe(next => {
+        this.zone.run(() => {
+          this.pFieldMaps = (next as any).ListVerifiedFields.pFieldMaps;
+          console.log(this.pFieldMaps);
         });
       }, error1 => {
+        this.dataLoading = false;
         console.error(error1);
+      }, () => {
+        this.httpClient.get<any>(filePrefix + 'RFID_Image_Data_Original.json', httpOptions).subscribe(next => {
+          this.zone.run(() => {
+            this.dataLoading = false;
+            this.passportImageBase64 = (next as any).RFID_ORIGINAL_GRAPH_DATA[0].File_Image.Data;
+            (document.getElementById('img') as any).src = 'data:image/jpeg;base64,' + this.passportImageBase64;
+          });
+        }, error => {
+          this.dataLoading = false;
+          console.error(error);
+        }, () => {
+          this.dataLoading = false;
+        });
       });
     });
   }
@@ -86,10 +139,24 @@ export class HomeComponent implements OnInit {
   }
 
   ready(event) {
-    this.httpClient.post<any>('http://127.0.0.1:8000/api/upload_images/', {
+
+    this.loading = true;
+    const tmp = {
       passport: this.passportImageBase64,
       webcam: event.imageAsBase64,
-    }).subscribe(next => {
+      full_name: (this.pFieldMaps)[8].Field_MRZ + ' ' + (this.pFieldMaps)[9].Field_MRZ,
+      citizen: (this.pFieldMaps)[10].Field_MRZ,
+      place_of_birth: (this.pFieldMaps)[6].Field_RFID,
+      date_of_birth: (this.pFieldMaps)[5].Field_MRZ,
+      passport_number: (this.pFieldMaps)[2].Field_MRZ,
+      passport_given_at: (this.pFieldMaps)[4].Field_RFID,
+      passport_expired_date: (this.pFieldMaps)[3].Field_MRZ,
+      sex: (this.pFieldMaps)[11].Field_MRZ,
+      type: (this.pFieldMaps)[0].Field_MRZ,
+      country_code: (this.pFieldMaps)[1].Field_MRZ
+    };
+    this.uploadSubs = this.api.uploadImage(tmp).subscribe(next => {
+      this.loading = false;
       this.globalImages = [];
       this.similarity = 0;
       console.log('next is ' + next);
@@ -101,11 +168,12 @@ export class HomeComponent implements OnInit {
           const base64: any = next[String(i)].base64_image;
           const percent: any = next[String(i)].percentage;
           const name1: any = next[String(i)].name;
+          const id: any = next[String(i)].id;
           console.log('base64 is ' + base64);
           console.log('percent is ' + percent);
           console.log('name is ' + name1);
           console.log('\n');
-          const imgs: ListImages = {percentage: percent, name: name1, base64_image: base64};
+          const imgs: ListImages = {percentage: percent, name: name1, base64_image: base64, id};
           console.log(imgs);
           this.globalImages.push(imgs);
         }
@@ -113,7 +181,10 @@ export class HomeComponent implements OnInit {
       console.log(this.globalImages);
       // this.reset();
       // console.log(next);
-    }, error => console.error(error));
+    }, error => {
+      this.loading = false;
+      console.error(error);
+    });
   }
 
   reset() {
@@ -126,12 +197,4 @@ export class HomeComponent implements OnInit {
     // this.webcamComponent.again();
   }
 
-  goToAuth() {
-    this.route.navigate(['auth']);
-  }
-
-  goToAdmin() {
-    this.route.navigate(['admin']);
-  }
 }
-

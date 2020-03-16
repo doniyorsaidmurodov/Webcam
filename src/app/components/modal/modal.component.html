@@ -1,0 +1,51 @@
+<div class="modal" id="myModal" role="alert">
+  <div class="modal-content">
+    <span (click)="closeModal()" class="close" id="close-btn">&times;</span>
+    <h5 class="text-red font-bold mb-3">Информации:</h5>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="left">
+          <img [src]="image" alt="" height="240" width="200">
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="right">
+          <p *ngIf="single.first_name"><span class="title">Фамилия:</span><span
+            class="body">{{single.first_name}}</span></p>
+          <p *ngIf="single.last_name"><span class="title">Имя:</span><span class="body">{{single.last_name}}</span></p>
+          <p *ngIf="single.patronymic"><span class="title">Отчество:</span><span
+            class="body">{{single.patronymic}}</span></p>
+          <p *ngIf="single.birth_place"><span class="title">Место рождения:</span><span
+            class="body">{{single.birth_place}}</span></p>
+          <p *ngIf="single.birth_date"><span class="title">Дата рождения:</span><span
+            class="body">{{single.birth_date}}</span></p>
+          <p *ngIf="single.pass_number"><span class="title">Номер паспорта:</span><span
+            class="body">{{single.pass_number}}</span></p>
+          <p *ngIf="single.pass_date"><span class="title">Дата выдачи:</span><span
+            class="body">{{single.pass_date}}</span></p>
+          <p *ngIf="single.pass_limit"><span class="title">Срок годности:</span><span
+            class="body">{{single.pass_limit}}</span></p>
+          <p *ngIf="single.pass_place"><span class="title">Орган персонализаци:</span><span
+            class="body">{{single.pass_place}}</span></p>
+          <p *ngIf="single.pass_type"><span class="title">Тип:</span><span class="body">{{single.pass_type}}</span></p>
+          <p *ngIf="single.citizen"><span class="title">Гражданство:</span><span class="body">{{single.citizen}}</span>
+          </p>
+          <p *ngIf="single.pass_country"><span class="title">Код государствы:</span><span
+            class="body">{{single.pass_country}}</span></p>
+          <p *ngIf="single.added_by"><span class="title">Добавлено:</span><span class="body">{{single.added_by}}</span>
+          </p>
+          <p *ngIf="single.reason"><span class="title">Причина:</span><span class="body">{{single.reason}}</span></p>
+          <p *ngIf="single.comment"><span class="title">Комментарии:</span><span class="body">{{single.comment}}</span>
+          </p>
+          <p *ngIf="single.date_pub"><span class="title">Дата создания:</span><span
+            class="body">{{single.date_pub}}</span></p>
+<!--          <p *ngIf="single.id"><span class="title">Ид:</span><span-->
+<!--            class="body">{{single.id}}</span></p>-->
+          <p *ngIf="single.percentage"><span class="title text-red">Процент:</span><span
+            class="body">{{single.percentage}}</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
